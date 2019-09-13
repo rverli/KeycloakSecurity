@@ -1,6 +1,7 @@
 package com.rio.services;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.rio.model.UserDTO;
+import com.rio.model.TokenDTO;
 
 @Service
 public class TokenService {
@@ -34,52 +36,44 @@ public class TokenService {
 	@Value("${keycloak.realm}")
 	private String REALM;
 	
-	public String getToken( UserDTO userDTO ) throws Exception {
-
-		String responseToken = null;
-		try {
-
-			String username = userDTO.getUsername();
-
-			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-			urlParameters.add(new BasicNameValuePair("grant_type", "password"));
-			urlParameters.add(new BasicNameValuePair("client_id", CLIENTID));
-			urlParameters.add(new BasicNameValuePair("username", username));
-			urlParameters.add(new BasicNameValuePair("password", userDTO.getPassword()));
-			urlParameters.add(new BasicNameValuePair("client_secret", SECRETKEY));
-
-			responseToken = sendPost(urlParameters);
-			
-			JSONObject json = (JSONObject)new JSONParser().parse( responseToken.toString() );		
-			responseToken = json.get("access_token").toString();
-			
-		} catch (Exception e) {
-			throw e;
-		}
-		return responseToken;
+	public TokenDTO getToken( String username, String password ) throws UnsupportedOperationException, ParseException, IOException {
+		
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("grant_type", "password"));
+		urlParameters.add(new BasicNameValuePair("client_id", CLIENTID));
+		urlParameters.add(new BasicNameValuePair("username", username));
+		urlParameters.add(new BasicNameValuePair("password", password));
+		urlParameters.add(new BasicNameValuePair("client_secret", SECRETKEY));
+		
+		return this.parseToken( this.sendPost( urlParameters ) );
 	}
 
-	public String getByRefreshToken( String refreshToken ) {
-
-		String responseToken = null;
-		try {
-
-			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-			urlParameters.add(new BasicNameValuePair("grant_type", "refresh_token"));
-			urlParameters.add(new BasicNameValuePair("client_id", CLIENTID));
-			urlParameters.add(new BasicNameValuePair("refresh_token", refreshToken));
-			urlParameters.add(new BasicNameValuePair("client_secret", SECRETKEY));
-
-			responseToken = sendPost(urlParameters);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return responseToken;
+	private TokenDTO parseToken( String response ) throws ParseException {
+		
+		JSONObject json = (JSONObject)new JSONParser().parse( response.toString() );
+		
+		TokenDTO tokenDTO = new TokenDTO();
+		tokenDTO.setAccessToken( json.get("access_token").toString() );
+		tokenDTO.setExpireIn( json.get("expires_in").toString() );		
+		tokenDTO.setRefreshToken( json.get("refresh_token").toString() );
+		tokenDTO.setRefreshExpiresIn( json.get("refresh_expires_in").toString() );
+		tokenDTO.setTokenType( json.get("token_type").toString() );
+		
+		return tokenDTO;
 	}
 	
-	private String sendPost(List<NameValuePair> urlParameters) throws Exception {
+	public String getByRefreshToken( String refreshToken ) throws UnsupportedOperationException, IOException {
+
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("grant_type", "refresh_token"));
+		urlParameters.add(new BasicNameValuePair("client_id", CLIENTID));
+		urlParameters.add(new BasicNameValuePair("refresh_token", refreshToken));
+		urlParameters.add(new BasicNameValuePair("client_secret", SECRETKEY));
+
+		return this.sendPost( urlParameters );
+	}
+	
+	private String sendPost(List<NameValuePair> urlParameters) throws UnsupportedOperationException, IOException {
 
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpPost post = new HttpPost(AUTHURL + "/realms/" + REALM + "/protocol/openid-connect/token");

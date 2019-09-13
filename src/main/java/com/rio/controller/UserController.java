@@ -1,58 +1,74 @@
 package com.rio.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.rio.exceptions.UsuarioJaCadastradoException;
+import com.rio.exceptions.UsuarioNaoEncontradoException;
+import com.rio.model.RoleDTO;
+import com.rio.model.UserDTO;
 import com.rio.services.UserService;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/v1/user")
 public class UserController {
 
 	@Autowired
 	UserService userService;
 
-	@RequestMapping(value = "/hello", method = RequestMethod.GET)
-	public ResponseEntity<?> sayHello() {
-
-		return new ResponseEntity<>("Hi!, you are auhorized to view this response!", HttpStatus.OK);
+	/**
+	 * Creating user in keycloak passing UserDTO contains username, emailid,
+	 * password, firtname, lastname
+	 * @throws UsuarioJaCadastradoException 
+	 * @throws Exception 
+	 */
+	@PostMapping("/create")
+	@ResponseBody
+	public UserDTO createUser( @RequestBody UserDTO userDTO ) throws UsuarioJaCadastradoException {
+		return userService.createUserAccount( userDTO );
 	}
-
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public ResponseEntity<?> logoutUser(HttpServletRequest request) {
-
-		request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-
-		AccessToken token = ((KeycloakPrincipal<?>) request.getUserPrincipal()).getKeycloakSecurityContext().getToken();
-
-		String userId = token.getSubject();
-
+	
+	@GetMapping("/{username}")
+	@ResponseBody
+	public UserDTO getUser( @PathVariable String username ) throws UsuarioNaoEncontradoException {
+		return userService.getUserDTO( username );
+	}
+	
+	@GetMapping("/existUser/{username}")
+	@ResponseBody
+	public boolean existUser( @PathVariable String username ) throws UsuarioNaoEncontradoException {
+		return userService.existeUsuario( username );
+	}
+	
+	@GetMapping("/getRoles/{userId}")
+	@ResponseBody
+	public List<RoleDTO> getRolesByUser( @PathVariable String userId ) {
+		return userService.getRolesByUser( userId );
+	}
+	
+	@PostMapping("/logout")
+	@ResponseBody
+	public void logoutUser(String userId) {
 		userService.logoutUser(userId);
-
-		return new ResponseEntity<>("Hi!, you have logged out successfully!", HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/update/password", method = RequestMethod.GET)
-	public ResponseEntity<?> updatePassword(HttpServletRequest request, String newPassword) {
-
-		request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-
-		AccessToken token = ((KeycloakPrincipal<?>) request.getUserPrincipal()).getKeycloakSecurityContext().getToken();
-
-		String userId = token.getSubject();
-
+	@PostMapping("/update/password")
+	@ResponseBody
+	public void updatePassword1(String userId, String newPassword) {
 		userService.resetPassword(newPassword, userId);
-
-		return new ResponseEntity<>("Hi!, your password has been successfully updated!", HttpStatus.OK);
 	}
+	
+	@PostMapping("/update")
+	@ResponseBody
+	public UserDTO updateUser( @RequestBody UserDTO userDTO ) throws UsuarioNaoEncontradoException {
+		return userService.updateUser( userDTO );
+	}		
 }
