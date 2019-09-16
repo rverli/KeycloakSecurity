@@ -1,29 +1,36 @@
 package com.rio.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String id;
 	private String username;
 	private String email;
 	private String firstName;
 	private String lastName;
 	private String password;	
-	private String userId;
-	private String role;
+	private List<String> roles;
 	
 	public UserDTO(){
 		super();
 	}
 	
-	public UserDTO(String username, String email, String firstName, String lastName) {
+	public UserDTO(
+			String userId, 
+			String username, 
+			String email, 
+			String firstName, 
+			String lastName) {
 		super();
+		this.id = userId;
 		this.username = username;
 		this.email = email;
 		this.firstName = firstName;
-		this.lastName = lastName;		
+		this.lastName = lastName;
 	}
 
 	public String getUsername() {
@@ -56,18 +63,16 @@ public class UserDTO implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getUserId() {
-		return userId;
+	public String getId() {
+		return id;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setId(String userId) {
+		this.id = userId;
 	}
-
-	public String getRole() {
-		return role;
+	public List<String> getRoles() {
+		return roles;
 	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}	
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}		
 }

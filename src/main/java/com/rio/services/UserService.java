@@ -16,6 +16,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.rio.exceptions.KeycloakException;
 import com.rio.exceptions.UsuarioJaCadastradoException;
 import com.rio.exceptions.UsuarioNaoEncontradoException;
 import com.rio.model.RoleDTO;
@@ -30,36 +31,36 @@ public class UserService {
 	@Value("${keycloak.realm}")
 	private String REALM;
 
-	private String userId;
+	public UserDTO createUserAccount(UserDTO userDTO) throws UsuarioJaCadastradoException, KeycloakException, UsuarioNaoEncontradoException {
 
-	public UserDTO createUserAccount(UserDTO userDTO) throws UsuarioJaCadastradoException {
+		if ( !existeUsuario( userDTO.getUsername() ) ) {
 
-		if (!existeUsuario(userDTO.getUsername())) {
-
-			userDTO = this.createUser(userDTO);
-			this.associaRoleUserAContaDoUsuario(userId, userDTO.getRole());
-
+			userDTO = this.createUser( userDTO );
+						
+			this.associarRole( userDTO.getUsername(), userDTO.getRoles() );			
 		} else {
-
-			if (!existeRoleUserAssociadaAContaDoUsuario(userId, userDTO.getRole())) {
-				this.associaRoleUserAContaDoUsuario(userId, userDTO.getRole());
-			}
+			this.associarRole( userDTO.getUsername(), userDTO.getRoles() );			
 		}
 		return userDTO;
 	}
 
 	// after logout user from the keycloak system. No new access token will be
 	// issued.
-	public void logoutUser(String userId) {
+	public void logoutUser(String username) throws UsuarioNaoEncontradoException {
 
 		UsersResource userRessource = KeycloakResources.getUsersResourceInstance(AUTHURL, REALM);
-		userRessource.get(userId).logout();
+		
+		UserDTO user = this.getUserDTO( username );
+		
+		userRessource.get( user.getId() ).logout();
 	}
 
-	public void resetPassword(String newPassword, String userId) {
+	public void resetPassword(String newPassword, String username) throws UsuarioNaoEncontradoException {
 
 		UsersResource userResource = KeycloakResources.getUsersResourceInstance(AUTHURL, REALM);
-
+		
+		UserDTO user = this.getUserDTO( username );
+		
 		// Define password credential
 		CredentialRepresentation newCredential = new CredentialRepresentation();
 		newCredential.setTemporary(false);
@@ -67,7 +68,7 @@ public class UserService {
 		newCredential.setValue(newPassword.toString().trim());
 
 		// Set password credential
-		userResource.get(userId).resetPassword(newCredential);
+		userResource.get( user.getId() ).resetPassword(newCredential);
 	}
 
 	public UserDTO getUserDTO(String username) throws UsuarioNaoEncontradoException {
@@ -76,7 +77,11 @@ public class UserService {
 
 		UserRepresentation representation = userResource.toRepresentation();
 
-		return new UserDTO(representation.getUsername(), representation.getEmail(), representation.getFirstName(),
+		return new UserDTO(
+				representation.getId(), 
+				representation.getUsername(), 
+				representation.getEmail(), 
+				representation.getFirstName(),
 				representation.getLastName());
 	}
 
@@ -109,9 +114,10 @@ public class UserService {
 		return userDTO;
 	}
 
-	private UserDTO createUser(UserDTO userDTO) throws UsuarioJaCadastradoException {
+	private UserDTO createUser(UserDTO userDTO) throws UsuarioJaCadastradoException, KeycloakException {
 
-		int statusId = 0;
+		int httpResponse = 0;
+		String userId;
 
 		UsersResource usersResource = KeycloakResources.getUsersResourceInstance(AUTHURL, REALM);
 		
@@ -124,16 +130,13 @@ public class UserService {
 
 		// Create user
 		Response result = usersResource.create(user);
-		System.out.println("Keycloak create user response code>>>>" + result.getStatus());
+		
+		httpResponse = result.getStatus();
 
-		statusId = result.getStatus();
-
-		if (statusId == HttpStatus.SC_CREATED) {
+		if ( httpResponse == HttpStatus.SC_CREATED ) {
 
 			userId = result.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-			userDTO.setUserId(userId);
-
-			System.out.println("User created with userId:" + userId);
+			userDTO.setId( userId );
 
 			// Define password credential
 			CredentialRepresentation passwordCred = new CredentialRepresentation();
@@ -142,15 +145,12 @@ public class UserService {
 			passwordCred.setValue(userDTO.getPassword());
 
 			// Set password credential
-			usersResource.get(userId).resetPassword(passwordCred);
+			usersResource.get( userId ).resetPassword(passwordCred);
 
-			System.out.println("Username==" + userDTO.getUsername() + " created in keycloak successfully");
-
-		} else if (statusId == HttpStatus.SC_CONFLICT) {
-			System.out.println("Username==" + userDTO.getUsername() + " already present in keycloak");
+		} else if ( httpResponse == HttpStatus.SC_CONFLICT ) {			
 			throw new UsuarioJaCadastradoException(userDTO.getUsername());
-		} else {
-			System.out.println("Username==" + userDTO.getUsername() + " could not be created in keycloak");
+		} else {			
+			throw new KeycloakException( httpResponse );
 		}
 
 		return userDTO;
@@ -164,11 +164,39 @@ public class UserService {
 				.collect(Collectors.toList());
 	}
 
-	private boolean existeRoleUserAssociadaAContaDoUsuario(String userId, String role) {
+	public boolean existeUsuario( String username ) {
+
+		RealmResource realmResourceInstance = KeycloakResources.getRealmResourceInstance(AUTHURL, REALM);
+		
+		List<UserRepresentation> usuarios = realmResourceInstance.users().search(username);
+
+		if (!usuarios.isEmpty()) {
+			String userId = usuarios.get(0).getId();
+			return userId != null && !userId.equals("");
+		}
+		return false;
+	}
+	
+	public List<RoleDTO> getRolesByUser( String username ) throws UsuarioNaoEncontradoException {
+		
+		UsersResource usersResource = KeycloakResources.getUsersResourceInstance( AUTHURL, REALM );
+		
+		UserDTO user = this.getUserDTO( username );
+		
+		List<RoleRepresentation> listRoles = usersResource.get( user.getId() ).roles().realmLevel().listAll();
+		
+		ArrayList<RoleDTO> roles = listRoles.stream()
+				.map(RoleDTO::new)
+				.collect(Collectors.toCollection(ArrayList::new));
+		
+		return roles;	  
+	}
+	
+	private boolean existeRoleAssociada(String userId, String role) {
 
 		UsersResource usersResource = KeycloakResources.getUsersResourceInstance(AUTHURL, REALM);
 
-		List<RoleRepresentation> roles = usersResource.get(userId).roles().realmLevel().listAll();
+		List<RoleRepresentation> roles = usersResource.get( userId ).roles().realmLevel().listAll();
 
 		if (!roles.isEmpty()) {
 			return !roles.stream().filter(r -> r.getName().equals(role)).collect(Collectors.toList()).isEmpty();
@@ -177,40 +205,25 @@ public class UserService {
 		return false;
 	}
 	
-	public List<RoleDTO> getRolesByUser( String userId ) {
-	
-		UsersResource usersResource = KeycloakResources.getUsersResourceInstance( AUTHURL, REALM );
-		
-		List<RoleRepresentation> listRoles = usersResource.get( userId ).roles().realmLevel().listAll();
-		
-		ArrayList<RoleDTO> roles = listRoles.stream()
-				.map(RoleDTO::new)
-				.collect(Collectors.toCollection(ArrayList::new));
-		
-		return roles;	  
-	}
-
-	private void associaRoleUserAContaDoUsuario(String userId, String role) {
+	private void associarRole(String username, List<String> roles) throws UsuarioNaoEncontradoException {
 
 		UsersResource usersResource = KeycloakResources.getUsersResourceInstance(AUTHURL, REALM);
 
-		List<RoleRepresentation> roles = this.getUserRole(role);
+		UserDTO user = this.getUserDTO( username );
+		
+		List<RoleRepresentation> rolesUser = new ArrayList<>();
+		
+		if ( roles != null && roles.size() > 0 ) {
+			for (String role : roles) {
+				
+				if ( !this.existeRoleAssociada( user.getId(), role) ) {
+					rolesUser.addAll( this.getUserRole(role) );
+				}
+			}
+		}
 
 		if (!roles.isEmpty()) {
-			usersResource.get(userId).roles().realmLevel().add(roles);
+			usersResource.get( user.getId() ).roles().realmLevel().add( rolesUser );
 		}
-	}
-
-	public boolean existeUsuario( String username ) {
-
-		RealmResource realmResourceInstance = KeycloakResources.getRealmResourceInstance(AUTHURL, REALM);
-
-		List<UserRepresentation> usuarios = realmResourceInstance.users().search(username);
-
-		if (!usuarios.isEmpty()) {
-			userId = usuarios.get(0).getId();
-			return userId != null && !userId.equals("");
-		}
-		return false;
 	}
 }
