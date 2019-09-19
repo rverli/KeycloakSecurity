@@ -16,9 +16,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.rio.exceptions.ServiceException;
 import com.rio.model.TokenDTO;
 
 @Service
@@ -36,7 +39,10 @@ public class TokenService {
 	@Value("${keycloak.realm}")
 	private String REALM;
 	
-	public TokenDTO getToken( String username, String password ) throws UnsupportedOperationException, ParseException, IOException {
+	private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+	
+	public TokenDTO getToken( String username, String password ) 
+			throws UnsupportedOperationException, ParseException, IOException, ServiceException {
 		
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 		urlParameters.add(new BasicNameValuePair("grant_type", "password"));
@@ -48,16 +54,26 @@ public class TokenService {
 		return this.parseToken( this.sendPost( urlParameters ) );
 	}
 
-	private TokenDTO parseToken( String response ) throws ParseException {
+	private TokenDTO parseToken( String response ) throws ParseException, ServiceException {
 		
-		JSONObject json = (JSONObject)new JSONParser().parse( response.toString() );
+		if ( response.contains("error") ) {
+			throw new ServiceException(response);
+		}
 		
-		TokenDTO tokenDTO = new TokenDTO();
-		tokenDTO.setAccessToken( json.get("access_token").toString() );
-		tokenDTO.setExpireIn( json.get("expires_in").toString() );		
-		tokenDTO.setRefreshToken( json.get("refresh_token").toString() );
-		tokenDTO.setRefreshExpiresIn( json.get("refresh_expires_in").toString() );
-		tokenDTO.setTokenType( json.get("token_type").toString() );
+		TokenDTO tokenDTO = null;
+		try {
+			JSONObject json = (JSONObject)new JSONParser().parse( response.toString() );
+		
+			tokenDTO = new TokenDTO();
+			tokenDTO.setAccessToken( json.get("access_token").toString() );
+			tokenDTO.setExpireIn( json.get("expires_in").toString() );		
+			tokenDTO.setRefreshToken( json.get("refresh_token").toString() );
+			tokenDTO.setRefreshExpiresIn( json.get("refresh_expires_in").toString() );
+			tokenDTO.setTokenType( json.get("token_type").toString() );
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+			throw e;
+		}
 		
 		return tokenDTO;
 	}

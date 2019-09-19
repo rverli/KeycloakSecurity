@@ -42,7 +42,7 @@ public class UserDTO implements Serializable {
 	public String getEmail() {
 		return email;
 	}
-	public void setEmailAddress(String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 	public String getFirstName() {
