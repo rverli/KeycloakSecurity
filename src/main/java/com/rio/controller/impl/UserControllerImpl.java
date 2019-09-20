@@ -24,7 +24,7 @@ public class UserControllerImpl implements UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserControllerImpl.class);
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 		
 	@PostMapping("/create")
 	@ResponseBody

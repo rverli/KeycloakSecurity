@@ -25,6 +25,7 @@ import com.rio.exceptions.UsuarioJaCadastradoException;
 import com.rio.exceptions.UsuarioNaoEncontradoException;
 import com.rio.model.RoleDTO;
 import com.rio.model.UserDTO;
+import com.rio.services.KeycloakResources;
 import com.rio.services.UserService;
 
 @Component
@@ -32,23 +33,20 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
-	@Value("${keycloak.auth-server-url}")
-	private String AUTHURL;
-
 	@Value("${keycloak.realm}")
 	private String REALM;
 	
 	@Autowired
-	private KeycloakResourcesImpl keycloakResources;
+	private KeycloakResources keycloakResources;
 
 	public UserDTO createUserAccount( UserDTO userDTO, UsersResource usersResource, RealmResource realmResource ) throws UsuarioJaCadastradoException, KeycloakException, UsuarioNaoEncontradoException {
 
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);
+			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 
 		if ( realmResource == null ) {
-			realmResource = keycloakResources.getRealmResourceInstance(AUTHURL, REALM);
+			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
 		if ( !existUser( userDTO.getUsername(), realmResource ) ) {
@@ -68,7 +66,7 @@ public class UserServiceImpl implements UserService {
 	public void logoutUser(String username, UsersResource usersResource) throws UsuarioNaoEncontradoException {
 
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);
+			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 		
 		String userId = this.getUserId( username, null );
@@ -79,7 +77,7 @@ public class UserServiceImpl implements UserService {
 	public void resetPassword(String newPassword, String username, UsersResource userResource) throws UsuarioNaoEncontradoException {
 
 		if ( userResource == null ) {
-			userResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);			
+			userResource = keycloakResources.getUsersResourceInstance();			
 		}
 		
 		String userId = this.getUserId( username, null );
@@ -122,7 +120,7 @@ public class UserServiceImpl implements UserService {
 	private UserResource getUser(String username, String email, Keycloak keycloakResource) throws UsuarioNaoEncontradoException {
 
 		if ( keycloakResource == null ) {
-			keycloakResource = keycloakResources.getKeycloakResourceInstance(AUTHURL, REALM);			
+			keycloakResource = keycloakResources.getKeycloakResourceInstance();			
 		}
 				
 		List<UserRepresentation> retrieveUserList = keycloakResource.realm(REALM).users().search(username, null, null, email, 0, 1);
@@ -136,10 +134,10 @@ public class UserServiceImpl implements UserService {
 	
 	public void removeUser(String username) throws UsuarioNaoEncontradoException {
 		
-		Keycloak keycloakResource = keycloakResources.getKeycloakResourceInstance(AUTHURL, REALM);
+		Keycloak keycloakResource = keycloakResources.getKeycloakResourceInstance();
 	
 		List<UserRepresentation> userList = 
-				this.getUserToRemove(username, keycloakResource);
+				this.getUserAll(username, keycloakResource);
 				
 		if ( userList != null && userList.size() > 0 ) {
 			for (int i = 0; i < userList.size(); i++) {
@@ -148,16 +146,20 @@ public class UserServiceImpl implements UserService {
 			
 			logger.info("Removed " + userList.size() + " users!");
 			
-			userList = this.getUserToRemove(username, keycloakResource);
+			userList = this.getUserAll(username, keycloakResource);
 			
 			if ( userList != null && userList.size() > 0 ) {
 				this.removeUser(username);
 			}
 		}		
 	}
-
-	private List<UserRepresentation> getUserToRemove(String username, Keycloak keycloakResource) 
+	
+	public List<UserRepresentation> getUserAll( String username, Keycloak keycloakResource ) 
 			throws UsuarioNaoEncontradoException {
+		
+		if ( keycloakResource == null ) {
+			keycloakResource = keycloakResources.getKeycloakResourceInstance();			
+		}
 		
 		List<UserRepresentation> userList = new ArrayList<>();
 		
@@ -169,7 +171,7 @@ public class UserServiceImpl implements UserService {
 			userList.add( userRepresentation );
 			
 		} else {
-			userList = keycloakResource.realm(REALM).users().list();			
+			userList = keycloakResource.realm(REALM).users().list(1, 100000);			
 		}
 		
 		return userList.size() > 0 ? userList : null;
@@ -192,7 +194,7 @@ public class UserServiceImpl implements UserService {
 		return userDTO;
 	}
 
-	private UserRepresentation createUserRepresentation(UserDTO userDTO) {
+	private UserRepresentation parseUserRepresentation(UserDTO userDTO) {
 		
 		UserRepresentation user = new UserRepresentation();
 		user.setUsername(userDTO.getUsername().toUpperCase());
@@ -206,38 +208,20 @@ public class UserServiceImpl implements UserService {
 	private UserDTO createUser(UserDTO userDTO, UsersResource usersResource) throws UsuarioJaCadastradoException, KeycloakException {
 
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);
+			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 		
-		int httpResponse = 0;
-		String userId;
+		Response result = usersResource.create( this.parseUserRepresentation( userDTO ) );
 		
-		UserRepresentation user = this.createUserRepresentation( userDTO );
-
-		// Create user
-		Response result = usersResource.create(user);
-		
-		httpResponse = result.getStatus();
+		int httpResponse = result.getStatus();
 
 		if ( httpResponse == HttpStatus.SC_CREATED ) {
-
-			userId = result.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-			userDTO.setId( userId );
-
-			if ( userDTO.getPassword() != null ) {
-				
-				//Define password credential
-				CredentialRepresentation passwordCred = new CredentialRepresentation();
-				passwordCred.setTemporary(false);
-				passwordCred.setType(CredentialRepresentation.PASSWORD);
-				passwordCred.setValue(userDTO.getPassword());
-				
-				//Set password credential
-				usersResource.get( userId ).resetPassword(passwordCred);
-			}
+			
+			userDTO.setId( result.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1") );
+			this.createPassword( userDTO, usersResource );
 
 		} else if ( httpResponse == HttpStatus.SC_CONFLICT ) {			
-			throw new UsuarioJaCadastradoException(userDTO.getUsername());
+			throw new UsuarioJaCadastradoException( userDTO.getUsername() );
 		} else {			
 			throw new KeycloakException( httpResponse );
 		}
@@ -245,10 +229,23 @@ public class UserServiceImpl implements UserService {
 		return userDTO;
 	}
 
+	private void createPassword(UserDTO userDTO, UsersResource usersResource) {
+		
+		if ( userDTO.getPassword() != null ) {
+			
+			CredentialRepresentation pass = new CredentialRepresentation();
+			pass.setType( CredentialRepresentation.PASSWORD );
+			pass.setValue( userDTO.getPassword() );
+			pass.setTemporary( false );
+			
+			usersResource.get( userDTO.getId() ).resetPassword( pass );
+		}
+	}
+	
 	private List<RoleRepresentation> getUserRole(String role, RealmResource realmResource) {
 		
 		if ( realmResource == null ) {
-			realmResource = keycloakResources.getRealmResourceInstance(AUTHURL, REALM);
+			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
 		return realmResource.roles().list().stream().filter(r -> r.getName().equals(role))
@@ -258,7 +255,7 @@ public class UserServiceImpl implements UserService {
 	public boolean existUser( String username, RealmResource realmResource ) {
 		
 		if ( realmResource == null ) {
-			realmResource = keycloakResources.getRealmResourceInstance(AUTHURL, REALM);
+			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
 		List<UserRepresentation> usuarios = realmResource.users().search(username);
@@ -273,7 +270,7 @@ public class UserServiceImpl implements UserService {
 	public List<RoleDTO> getRolesByUser( String username, UsersResource usersResource ) throws UsuarioNaoEncontradoException {
 		
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance( AUTHURL, REALM );			
+			usersResource = keycloakResources.getUsersResourceInstance(  );			
 		}
 		
 		String userId = this.getUserId( username, null );
@@ -290,7 +287,7 @@ public class UserServiceImpl implements UserService {
 	private boolean existAssociateRole(String userId, String role, UsersResource usersResource) {
 
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);
+			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 		
 		List<RoleRepresentation> roles = usersResource.get( userId ).roles().realmLevel().listAll();
@@ -311,7 +308,7 @@ public class UserServiceImpl implements UserService {
 	 * UsersResource usersResource ) {
 	 * 
 	 * if ( usersResource == null ) { usersResource =
-	 * keycloakResources.getUsersResourceInstance(AUTHURL, REALM); }
+	 * keycloakResources.getUsersResourceInstance(); }
 	 * 
 	 * if ( roles == null || roles.size() <= 0 ) return;
 	 * 
@@ -331,11 +328,11 @@ public class UserServiceImpl implements UserService {
 					throws UsuarioNaoEncontradoException {
 
 		if ( usersResource == null ) {
-			usersResource = keycloakResources.getUsersResourceInstance(AUTHURL, REALM);
+			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 		
 		if ( realmResource == null ) {
-			realmResource = keycloakResources.getRealmResourceInstance(AUTHURL, REALM);
+			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
 		if ( userId == null ) {

@@ -6,6 +6,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.rio.services.KeycloakResources;
@@ -13,15 +14,21 @@ import com.rio.services.KeycloakResources;
 @Service
 public class KeycloakResourcesImpl implements KeycloakResources {
 	
-	public Keycloak getKeycloakResourceInstance(String AUTHURL, String REALM) {		
+	@Value("${keycloak.auth-server-url}")
+	private String AUTHURL;
+
+	@Value("${keycloak.realm}")
+	private String REALM;
+	
+	public Keycloak getKeycloakResourceInstance() {		
 		return this.getKeycloakResource(AUTHURL, REALM);		
 	}
 	
-	public UsersResource getUsersResourceInstance(String AUTHURL, String REALM) {
+	public UsersResource getUsersResourceInstance() {
 		return this.getKeycloakUserResource(AUTHURL, REALM);		
 	}
 	
-	public RealmResource getRealmResourceInstance(String AUTHURL, String REALM) {
+	public RealmResource getRealmResourceInstance() {
 		return this.getKeycloakRealmResource(AUTHURL, REALM);
 	}
 	
@@ -33,7 +40,7 @@ public class KeycloakResourcesImpl implements KeycloakResources {
 				.serverUrl(AUTHURL)
 				.realm("master")
 				.username("admin")
-				.password("admin")
+				.password("admin")				
 				.clientId("admin-cli")				
 				.resteasyClient( client )
 				.build();

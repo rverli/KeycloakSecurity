@@ -1,18 +1,14 @@
 package com.rio.importFile.jms;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import javax.sound.midi.Receiver;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
 import com.rio.controller.UserController;
 import com.rio.exceptions.KeycloakException;
 import com.rio.exceptions.UsuarioJaCadastradoException;
@@ -42,10 +38,12 @@ public class ListenerJms {
 		}	  
 	}
 	
-	private void createUser( String line ) throws Exception {
+	private void createUser( String json ) throws Exception {
+		
+		UserDTO userDTO = new Gson().fromJson(json, UserDTO.class);
 		
 		try {
-			userController.createUser( this.parse( line ) );
+			userController.createUser( userDTO );
 		} catch (UsuarioJaCadastradoException e1) {
 			logger.error(e1.getMessage());
 		} catch (KeycloakException e1) {
@@ -53,40 +51,5 @@ public class ListenerJms {
 		} catch (UsuarioNaoEncontradoException e1) {
 			logger.error(e1.getMessage());
 		}
-	}
-	
-	private UserDTO parse( String line ) {
-		
-		StringTokenizer st = new StringTokenizer(line, ";");
-		
-		UserDTO userDTO = new UserDTO();
-		
-		userDTO.setUsername( st.nextElement().toString() );
-		userDTO.setEmail( st.nextElement().toString() );
-		
-		String fullName = st.nextElement().toString();
-		
-		st = new StringTokenizer(fullName, " ");
-		
-		String firstName = st.nextElement().toString();
-		userDTO.setFirstName( firstName.toUpperCase().trim() );
-		
-		String lastName = "";
-		
-		while (st.hasMoreElements()) {
-			lastName+= " ";
-			lastName+= st.nextElement();
-		}
-		
-		lastName = StringUtils.stripStart(lastName, " \t");
-		
-		userDTO.setLastName( lastName.toUpperCase().trim() );
-		
-		List<String> roles = new ArrayList<String>();
-		roles.add("carioca-rio");
-		roles.add("user");
-		userDTO.setRoles( roles );
-		
-		return userDTO;		
 	}
 }

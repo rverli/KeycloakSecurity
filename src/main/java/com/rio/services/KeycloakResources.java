@@ -6,9 +6,9 @@ import org.keycloak.admin.client.resource.UsersResource;
 
 public interface KeycloakResources {
 	
-	Keycloak getKeycloakResourceInstance(String AUTHURL, String REALM);
+	Keycloak getKeycloakResourceInstance();
 	
-	UsersResource getUsersResourceInstance(String AUTHURL, String REALM);
+	UsersResource getUsersResourceInstance();
 	
-	RealmResource getRealmResourceInstance(String AUTHURL, String REALM);
+	RealmResource getRealmResourceInstance();
 }
