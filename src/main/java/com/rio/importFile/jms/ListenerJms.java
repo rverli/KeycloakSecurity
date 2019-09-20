@@ -1,79 +1,48 @@
-package com.rio.fileupload.service;
+package com.rio.importFile.jms;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import javax.sound.midi.Receiver;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Component;
 
 import com.rio.controller.UserController;
 import com.rio.exceptions.KeycloakException;
 import com.rio.exceptions.UsuarioJaCadastradoException;
 import com.rio.exceptions.UsuarioNaoEncontradoException;
-import com.rio.fileupload.jms.SenderJms;
 import com.rio.model.UserDTO;
 
-@Service
-public class ImportService {
+@Component
+public class ListenerJms {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImportService.class);
-	
 	@Autowired
 	private UserController userController;
 	
-	@Autowired
-	private FileStorageService fileStorageService;
+	private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
 	
-	@Autowired
-	private SenderJms sender;
+	private static int COUNT = 0; 
 	
-	@Value("${destination.queue}")
-	private String destinationQueue;
-	
-	@Value("${file.upload-dir}")
-	private String UPLOAD_DIR;
-	
-	public void importFile( MultipartFile file ) throws Exception {
+	@JmsListener(destination = "${destination.queue}")
+	public void receive1(String message) {
 		
-		String fileName = fileStorageService.storeFile(file);
+		COUNT+=1;
+		logger.info(String.valueOf(COUNT));
 		
-		File csvFile = new File(UPLOAD_DIR + "/" + fileName);
-		
-		if ( csvFile.isFile() && csvFile.exists() ) {
-			
-			String line = null;
-		
-			int count = 0;
-			
-			try {
-				BufferedReader csvReader = new BufferedReader(new FileReader( csvFile ));
-				while ((line = csvReader.readLine()) != null) {
-					count+=1;
-					sender.send(destinationQueue, line);
-					logger.info(String.valueOf(count));
-				}
-				csvReader.close();
-			} catch (IOException e) {
-				throw e;
-			}
-		}
-		
-		if (csvFile.exists()) {
-			csvFile.delete();
-		}
+	  	try {
+	  		this.createUser( message );
+		} catch (Exception e) {		
+			logger.error(e.getMessage());
+		}	  
 	}
 	
-	public void createUser( String line ) throws Exception {
+	private void createUser( String line ) throws Exception {
 		
 		try {
 			userController.createUser( this.parse( line ) );

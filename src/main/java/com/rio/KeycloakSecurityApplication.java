@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.jms.annotation.EnableJms;
 
-import com.rio.fileupload.property.FileStorageProperties;
+import com.rio.importFile.property.FileStorageProperties;
 
 @SpringBootApplication
 @EnableJms

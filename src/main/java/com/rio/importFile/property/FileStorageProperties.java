@@ -1,4 +1,4 @@
-package com.rio.fileupload.property;
+package com.rio.importFile.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

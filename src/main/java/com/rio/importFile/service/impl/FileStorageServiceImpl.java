@@ -1,4 +1,4 @@
-package com.rio.fileupload.service;
+package com.rio.importFile.service.impl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,17 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.rio.fileupload.exceptions.FileStorageException;
-import com.rio.fileupload.exceptions.MyFileNotFoundException;
-import com.rio.fileupload.property.FileStorageProperties;
+import com.rio.importFile.exceptions.FileStorageException;
+import com.rio.importFile.exceptions.MyFileNotFoundException;
+import com.rio.importFile.property.FileStorageProperties;
+import com.rio.importFile.service.FileStorageService;
 
 @Service
-public class FileStorageService {
+public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 

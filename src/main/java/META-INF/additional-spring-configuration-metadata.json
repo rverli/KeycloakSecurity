@@ -23,5 +23,30 @@
     "name": "destination.queue",
     "type": "java.lang.String",
     "description": "A description for 'destination.queue'"
+  },
+  {
+    "name": "user.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'user.queue'"
+  },
+  {
+    "name": "destination.user1.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'destination.user1.queue'"
+  },
+  {
+    "name": "destination.user2.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'destination.user2.queue'"
+  },
+  {
+    "name": "destination.user1.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'destination.user1.queue'"
+  },
+  {
+    "name": "destination.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'destination.queue'"
   }
 ]}

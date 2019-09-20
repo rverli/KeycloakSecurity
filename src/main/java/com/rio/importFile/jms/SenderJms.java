@@ -1,4 +1,4 @@
-package com.rio.fileupload.jms;
+package com.rio.importFile.jms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

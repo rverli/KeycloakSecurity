@@ -6,6 +6,541 @@
 	},
 	"item": [
 		{
+			"name": "import",
+			"item": [
+				{
+					"name": "ImportFile 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5551/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5551",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5552/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5552",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5553/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5553",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 4",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5554/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5554",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 5",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5555/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5555",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 6",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5556/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5556",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 7",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5557/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5557",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 8",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5558/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5558",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 9",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5559/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5559",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile10",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5560/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5560",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 11",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5561/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5561",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFile 12",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5562/v1/file/import",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5562",
+							"path": [
+								"v1",
+								"file",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImportFiles",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5555/v1/file/importMultipleFiles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5555",
+							"path": [
+								"v1",
+								"file",
+								"importMultipleFiles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "GetUser",
 			"request": {
 				"method": "GET",
@@ -15,12 +550,15 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:5555/v1/user?username=rverli",
+					"raw": "http://10.5.225.39:5559/v1/user?username=rverli",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"10",
+						"5",
+						"225",
+						"39"
 					],
-					"port": "5555",
+					"port": "5559",
 					"path": [
 						"v1",
 						"user"
@@ -30,6 +568,31 @@
 							"key": "username",
 							"value": "rverli"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RemoveUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5555/v1/user/removeAll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5555",
+					"path": [
+						"v1",
+						"user",
+						"removeAll"
 					]
 				}
 			},
@@ -89,7 +652,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"rverli3\",\n  \"password\": \"12345632\",\n  \"email\": \"renan123@gmail.com\",\n  \"firstName\": \"Renan32\",\n  \"lastName\": \"Verli23\",\n  \"role\": \"carioca-rio\"\n}"
+					"raw": "{\n  \"username\": \"rverli5\",\n  \"password\": \"123456324\",\n  \"email\": \"renan5@gmail.com\",\n  \"firstName\": \"Renan5\",\n  \"lastName\": \"Verli5\",\n  \"roles\": [\"carioca-rio\", \"user\"]\n}"
 				},
 				"url": {
 					"raw": "http://localhost:5555/v1/user/create",

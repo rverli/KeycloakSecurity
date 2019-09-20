@@ -1,4 +1,4 @@
-package com.rio.fileupload.controller;
+package com.rio.importFile.controller.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.rio.fileupload.service.ImportService;
+import com.rio.importFile.controller.ImportController;
+import com.rio.importFile.service.ImportService;
 
 @RestController
 @RequestMapping(value = "/v1/file")
-public class ImportController {
+public class ImportControllerImpl implements ImportController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImportController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportControllerImpl.class);
 
     @Autowired
     private ImportService importService;
