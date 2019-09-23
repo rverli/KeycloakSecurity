@@ -53,5 +53,10 @@
     "name": "destination.queue",
     "type": "java.lang.String",
     "description": "A description for 'destination.queue'"
+  },
+  {
+    "name": "destination.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'destination.queue'"
   }
 ]}

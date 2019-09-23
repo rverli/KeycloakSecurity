@@ -1,7 +1,5 @@
 package com.rio.importFile.jms;
 
-import javax.sound.midi.Receiver;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +16,18 @@ import com.rio.model.UserDTO;
 @Component
 public class ListenerJms {
 
+	private static final Logger logger = LoggerFactory.getLogger( ListenerJms.class );
+	
 	@Autowired
 	private UserController userController;
-	
-	private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
-	
+		
 	private static int COUNT = 0; 
 	
 	@JmsListener(destination = "${destination.queue}")
 	public void receive1(String message) {
 		
 		COUNT+=1;
-		logger.info(String.valueOf(COUNT));
+		logger.info( "" + COUNT );
 		
 	  	try {
 	  		this.createUser( message );

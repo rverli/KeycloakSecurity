@@ -33,12 +33,12 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
-	@Value("${keycloak.realm}")
-	private String REALM;
-	
 	@Autowired
 	private KeycloakResources keycloakResources;
-
+	
+	@Value("${keycloak.realm}")
+	private String REALM;
+		
 	public UserDTO createUserAccount( UserDTO userDTO, UsersResource usersResource, RealmResource realmResource ) throws UsuarioJaCadastradoException, KeycloakException, UsuarioNaoEncontradoException {
 
 		if ( usersResource == null ) {
@@ -61,8 +61,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return userDTO;
 	}
-
-	// after logout user from the keycloak system. No new access token will be issued.
+	
 	public void logoutUser(String username, UsersResource usersResource) throws UsuarioNaoEncontradoException {
 
 		if ( usersResource == null ) {
@@ -72,6 +71,8 @@ public class UserServiceImpl implements UserService {
 		String userId = this.getUserId( username, null );
 		
 		usersResource.get( userId ).logout();
+		
+		logger.info("User " + username + " was logged out!");
 	}
 
 	public void resetPassword(String newPassword, String username, UsersResource userResource) throws UsuarioNaoEncontradoException {
@@ -82,16 +83,14 @@ public class UserServiceImpl implements UserService {
 		
 		String userId = this.getUserId( username, null );
 		
-		// Define password credential
 		CredentialRepresentation newCredential = new CredentialRepresentation();
 		newCredential.setTemporary(false);
 		newCredential.setType(CredentialRepresentation.PASSWORD);
 		newCredential.setValue(newPassword.toString().trim());
-
-		// Set password credential
+		
 		userResource.get( userId ).resetPassword(newCredential);
 		
-		logger.info("Password changed! [" + username + "]");
+		logger.info("Password changed! User [" + username + "]");
 	}
 
 	public UserDTO getUserDTO(String username, String email) throws UsuarioNaoEncontradoException {
@@ -123,10 +122,10 @@ public class UserServiceImpl implements UserService {
 			keycloakResource = keycloakResources.getKeycloakResourceInstance();			
 		}
 				
-		List<UserRepresentation> retrieveUserList = keycloakResource.realm(REALM).users().search(username, null, null, email, 0, 1);
+		List<UserRepresentation> retrieveUserList = keycloakResource.realm( REALM ).users().search(username, null, null, email, 0, 1);
 
 		if (retrieveUserList.size() != 0) {			
-			return keycloakResource.realm(REALM).users().get(retrieveUserList.get(0).getId());
+			return keycloakResource.realm( REALM ).users().get(retrieveUserList.get(0).getId());
 		} else {
 			throw new UsuarioNaoEncontradoException(username);
 		}
@@ -193,25 +192,14 @@ public class UserServiceImpl implements UserService {
 
 		return userDTO;
 	}
-
-	private UserRepresentation parseUserRepresentation(UserDTO userDTO) {
-		
-		UserRepresentation user = new UserRepresentation();
-		user.setUsername(userDTO.getUsername().toUpperCase());
-		user.setEmail(userDTO.getEmail().toLowerCase());
-		user.setFirstName(userDTO.getFirstName().toUpperCase());
-		user.setLastName(userDTO.getLastName().toUpperCase());
-		user.setEnabled(true);		
-		return user;
-	}
 	
-	private UserDTO createUser(UserDTO userDTO, UsersResource usersResource) throws UsuarioJaCadastradoException, KeycloakException {
+	private UserDTO createUser( UserDTO userDTO, UsersResource usersResource ) throws UsuarioJaCadastradoException, KeycloakException {
 
 		if ( usersResource == null ) {
 			usersResource = keycloakResources.getUsersResourceInstance();
 		}
 		
-		Response result = usersResource.create( this.parseUserRepresentation( userDTO ) );
+		Response result = usersResource.create( this.parseUserDTOToUserRepresentation( userDTO ) );
 		
 		int httpResponse = result.getStatus();
 
@@ -229,7 +217,7 @@ public class UserServiceImpl implements UserService {
 		return userDTO;
 	}
 
-	private void createPassword(UserDTO userDTO, UsersResource usersResource) {
+	private void createPassword( UserDTO userDTO, UsersResource usersResource ) {
 		
 		if ( userDTO.getPassword() != null ) {
 			
@@ -242,17 +230,20 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	private List<RoleRepresentation> getUserRole(String role, RealmResource realmResource) {
+	private List<RoleRepresentation> getUserRole( String role, RealmResource realmResource ) {
 		
 		if ( realmResource == null ) {
 			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
-		return realmResource.roles().list().stream().filter(r -> r.getName().equals(role))
-				.collect(Collectors.toList());
+		return realmResource.roles()
+				.list()
+				.stream()
+				.filter( r -> r.getName().equals( role ) )
+				.collect( Collectors.toList() );
 	}
 
-	public boolean existUser( String username, RealmResource realmResource ) {
+	private boolean existUser( String username, RealmResource realmResource ) {
 		
 		if ( realmResource == null ) {
 			realmResource = keycloakResources.getRealmResourceInstance();
@@ -277,14 +268,12 @@ public class UserServiceImpl implements UserService {
 		
 		List<RoleRepresentation> listRoles = usersResource.get( userId ).roles().realmLevel().listAll();
 		
-		ArrayList<RoleDTO> roles = listRoles.stream()
-				.map(RoleDTO::new)
-				.collect(Collectors.toCollection(ArrayList::new));
-		
-		return roles;	  
+		return listRoles.stream()
+				 .map( RoleDTO::new )
+				 .collect( Collectors.toCollection( ArrayList::new ) );	  
 	}
 	
-	private boolean existAssociateRole(String userId, String role, UsersResource usersResource) {
+	private boolean existAssociateRole( String userId, String role, UsersResource usersResource ) {
 
 		if ( usersResource == null ) {
 			usersResource = keycloakResources.getUsersResourceInstance();
@@ -292,10 +281,9 @@ public class UserServiceImpl implements UserService {
 		
 		List<RoleRepresentation> roles = usersResource.get( userId ).roles().realmLevel().listAll();
 		
-		//this.removeRoles(roles, userId, usersResource);
-		
-		if (!roles.isEmpty() && roles.size() > 0) {						
-			return !roles.stream()
+		if (!roles.isEmpty() && roles.size() > 0) {
+			return !roles
+					.stream()
 					.filter(r -> r.getName().equals(role))
 					.collect(Collectors.toList()).isEmpty();
 		}
@@ -303,27 +291,38 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
-	/*
-	 * private void removeRoles( List<RoleRepresentation> roles, String userId,
-	 * UsersResource usersResource ) {
-	 * 
-	 * if ( usersResource == null ) { usersResource =
-	 * keycloakResources.getUsersResourceInstance(); }
-	 * 
-	 * if ( roles == null || roles.size() <= 0 ) return;
-	 * 
-	 * List<RoleRepresentation> rolesToRemove = new ArrayList<>();
-	 * 
-	 * for (RoleRepresentation roleRepresentation : roles) { if (
-	 * roleRepresentation.getName().equals("offline_access") ||
-	 * roleRepresentation.getName().equals("uma_authorization") ) {
-	 * rolesToRemove.add( roleRepresentation ); } }
-	 * 
-	 * usersResource.get( userId ).roles().realmLevel().remove( rolesToRemove ); }
-	 */
 	
-	private void associateRole(
-			String userId, String username, List<String> roles, 
+	public void removeRoles( String userId, String username, List<String> roles, UsersResource usersResource ) 
+			throws UsuarioNaoEncontradoException {
+	
+		if ( usersResource == null ) { 
+			usersResource = keycloakResources.getUsersResourceInstance(); 
+		}
+		
+		if ( roles == null || roles.size() <= 0 ) return;
+		
+		if ( userId == null ) {
+			UserResource user = this.getUser(username, null, null);
+			userId = user.toRepresentation().getId();
+		}
+		
+		List<RoleRepresentation> rolesToRemove = new ArrayList<>();
+		
+		RoleRepresentation roleRepresentation = null;
+		
+		for (String role : roles) { 
+						
+			roleRepresentation = new RoleRepresentation();
+			roleRepresentation.setName( role );
+			rolesToRemove.add( roleRepresentation );			 
+		}
+		
+		usersResource.get( userId ).roles().realmLevel().remove( rolesToRemove );		
+		logger.info( "Roles [" + roles.toString() + "] removed from user " + username );
+	}
+	
+	
+	public void associateRole( String userId, String username, List<String> roles, 
 			UsersResource usersResource, RealmResource realmResource) 
 					throws UsuarioNaoEncontradoException {
 
@@ -340,7 +339,7 @@ public class UserServiceImpl implements UserService {
 			userId = user.toRepresentation().getId();
 		}
 		
-		roles = this.removeAdminRole( roles );
+		roles.removeIf( "admin"::contains );
 		
 		List<RoleRepresentation> rolesUser = new ArrayList<>();
 		
@@ -355,17 +354,18 @@ public class UserServiceImpl implements UserService {
 		
 		if (!roles.isEmpty() && rolesUser.size() > 0) {
 			usersResource.get( userId ).roles().realmLevel().add( rolesUser );
+			logger.info("Associated role(s) " + rolesUser.toString() + " to user [" + username + "]");
 		}
 	}
 	
-	private List<String> removeAdminRole( List<String> roles ) {
+	private UserRepresentation parseUserDTOToUserRepresentation(UserDTO userDTO) {
 		
-		if ( roles == null || roles.size() == 0 ) return null;
-		
-		if ( roles.contains("admin") ) {
-			roles.remove("admin");
-		}
-		
-		return roles;
+		UserRepresentation user = new UserRepresentation();
+		user.setUsername(userDTO.getUsername().toUpperCase());
+		user.setEmail(userDTO.getEmail().toLowerCase());
+		user.setFirstName(userDTO.getFirstName().toUpperCase());
+		user.setLastName(userDTO.getLastName().toUpperCase());
+		user.setEnabled(true);		
+		return user;
 	}
 }

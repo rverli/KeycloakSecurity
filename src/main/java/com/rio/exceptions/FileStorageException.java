@@ -1,4 +1,4 @@
-package com.rio.importFile.exceptions;
+package com.rio.exceptions;
 
 public class FileStorageException extends RuntimeException {
 

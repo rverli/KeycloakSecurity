@@ -19,21 +19,34 @@ public interface UserService {
 	UserDTO createUserAccount( UserDTO userDTO, UsersResource usersResource, RealmResource realmResource ) 
 			throws UsuarioJaCadastradoException, KeycloakException, UsuarioNaoEncontradoException;
 	
-	void logoutUser(String username, UsersResource usersResource) throws UsuarioNaoEncontradoException;
+	void logoutUser(String username, UsersResource usersResource) 
+			throws UsuarioNaoEncontradoException;
 
-	void resetPassword(String newPassword, String username, UsersResource userResource) throws UsuarioNaoEncontradoException;
+	void resetPassword(String newPassword, String username, UsersResource userResource) 
+			throws UsuarioNaoEncontradoException;
 
-	UserDTO getUserDTO(String username, String email) throws UsuarioNaoEncontradoException;
+	UserDTO getUserDTO(String username, String email) 
+			throws UsuarioNaoEncontradoException;
 
-	String getUserId(String username, String email) throws UsuarioNaoEncontradoException;
+	String getUserId(String username, String email) 
+			throws UsuarioNaoEncontradoException;
 	
-	void removeUser(String username) throws UsuarioNaoEncontradoException;
+	void removeUser(String username) 
+			throws UsuarioNaoEncontradoException;
 	
-	UserDTO updateUser(UserDTO userDTO, UserResource userResource) throws UsuarioNaoEncontradoException;
+	UserDTO updateUser(UserDTO userDTO, UserResource userResource) 
+			throws UsuarioNaoEncontradoException;
+		
+	List<RoleDTO> getRolesByUser( String username, UsersResource usersResource ) 
+			throws UsuarioNaoEncontradoException;
 	
-	boolean existUser( String username, RealmResource realmResource );
+	List<UserRepresentation> getUserAll( String username, Keycloak keycloakResource ) 
+			throws UsuarioNaoEncontradoException;
 	
-	List<RoleDTO> getRolesByUser( String username, UsersResource usersResource ) throws UsuarioNaoEncontradoException;
+	void removeRoles( String userId, String username, List<String> roles, UsersResource usersResource )	
+			throws UsuarioNaoEncontradoException;
 	
-	List<UserRepresentation> getUserAll( String username, Keycloak keycloakResource ) throws UsuarioNaoEncontradoException;
+	void associateRole( String userId, String username, List<String> roles, 
+			UsersResource usersResource, RealmResource realmResource) 
+			throws UsuarioNaoEncontradoException;
 }

@@ -35,13 +35,6 @@ public interface UserController {
 	void removeUser( String username ) throws Exception;
 	
 	/**
-	 * Verify if user was already created by another system or person
-	 * @param username
-	 * @return
-	 */	
-	boolean existUser( String username ) throws Exception;
-	
-	/**
 	 * Get all user's roles
 	 * @param username
 	 * @return

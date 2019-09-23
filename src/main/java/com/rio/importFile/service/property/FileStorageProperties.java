@@ -1,4 +1,4 @@
-package com.rio.importFile.property;
+package com.rio.importFile.service.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

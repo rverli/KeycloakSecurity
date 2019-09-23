@@ -25,7 +25,7 @@ public class UserControllerImpl implements UserController {
 	
 	@Autowired
 	private UserService userService;
-		
+	
 	@PostMapping("/create")
 	@ResponseBody
 	public UserDTO createUser( @RequestBody UserDTO userDTO ) throws Exception {
@@ -62,12 +62,24 @@ public class UserControllerImpl implements UserController {
 		}
 	}
 	
-	@GetMapping("/existUser")
+	@GetMapping("/removeRoles")
 	@ResponseBody
-	public boolean existUser( String username ) throws Exception {
+	public void removeRoles( String username, List<String> roles ) throws Exception {		
 		
 		try {
-			return userService.existUser( username, null );
+			userService.removeRoles( null, username, roles, null );
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		}
+	}
+	
+	@GetMapping("/associateRoles")
+	@ResponseBody
+	public void associateRoles( String username, List<String> roles ) throws Exception {		
+		
+		try {
+			userService.associateRole( null, username, roles, null, null );
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw e;

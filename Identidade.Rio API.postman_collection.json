@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "f6553bb2-d22b-4a50-87db-7741ae8a6115",
-		"name": "Identidade.Rio Demo",
+		"name": "Identidade.Rio API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -541,293 +541,373 @@
 			]
 		},
 		{
-			"name": "GetUser",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://10.5.225.39:5559/v1/user?username=rverli",
-					"protocol": "http",
-					"host": [
-						"10",
-						"5",
-						"225",
-						"39"
-					],
-					"port": "5559",
-					"path": [
-						"v1",
-						"user"
-					],
-					"query": [
+			"name": "User",
+			"item": [
+				{
+					"name": "Role",
+					"item": [
 						{
-							"key": "username",
-							"value": "rverli"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "RemoveUser",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/removeAll",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"removeAll"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetToken",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\":\"28930261841\",\n\t\"password\":\"123456789\"\n}"
-				},
-				"url": {
-					"raw": "http://127.0.0.1:5555/v1/token?username=rverli&password=123456",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"token"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "rverli"
+							"name": "GetRoles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5555/v1/user/getRoles?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"v1",
+										"user",
+										"getRoles"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
+										}
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"key": "password",
-							"value": "123456"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "CreateUser",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"rverli5\",\n  \"password\": \"123456324\",\n  \"email\": \"renan5@gmail.com\",\n  \"firstName\": \"Renan5\",\n  \"lastName\": \"Verli5\",\n  \"roles\": [\"carioca-rio\", \"user\"]\n}"
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/create",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ExistUser",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/existUser?username=marietagonzaga",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"existUser"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "marietagonzaga"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetRoles",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/getRoles?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"getRoles"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Logout",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/logout?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"logout"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "UpdatePassword",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/update/password?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead&newPassword=123456",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"update",
-						"password"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
+							"name": "AssociateRoles",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://10.5.225.39:5556/v1/user/associateRoles?username=rverli&roles=user",
+									"protocol": "http",
+									"host": [
+										"10",
+										"5",
+										"225",
+										"39"
+									],
+									"port": "5556",
+									"path": [
+										"v1",
+										"user",
+										"associateRoles"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "rverli"
+										},
+										{
+											"key": "roles",
+											"value": "user"
+										}
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"key": "newPassword",
-							"value": "123456"
+							"name": "RemoveRoles",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://10.5.225.39:5556/v1/user/removeRoles?username=rverli&roles=user",
+									"protocol": "http",
+									"host": [
+										"10",
+										"5",
+										"225",
+										"39"
+									],
+									"port": "5556",
+									"path": [
+										"v1",
+										"user",
+										"removeRoles"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "rverli"
+										},
+										{
+											"key": "roles",
+											"value": "user"
+										}
+									]
+								}
+							},
+							"response": []
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update User",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"marietagonzaga\",\n  \"password\": \"12345632\",\n  \"email\": \"marieta@gmail.com\",\n  \"firstName\": \"Marieta\",\n  \"lastName\": \"Gonzaga\",\n  \"role\": \"carioca-rio\"\n}"
-				},
-				"url": {
-					"raw": "http://localhost:5555/v1/user/create",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "5555",
-					"path": [
-						"v1",
-						"user",
-						"create"
-					]
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Token",
+					"item": [
+						{
+							"name": "GetUserToken",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\":\"28930261841\",\n\t\"password\":\"123456789\"\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:5555/v1/token?username=rverli&password=123456",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "5555",
+									"path": [
+										"v1",
+										"token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "rverli"
+										},
+										{
+											"key": "password",
+											"value": "123456"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "GetUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5551/v1/user?username=rverli",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5551",
+							"path": [
+								"v1",
+								"user"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "rverli"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RemoveUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://10.5.225.39:5559/v1/user/removeUser?username=rverli",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5559",
+							"path": [
+								"v1",
+								"user",
+								"removeUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "rverli"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"rverli\",\n  \"password\": \"123456\",\n  \"email\": \"renan@gmail.com\",\n  \"firstName\": \"Renan\",\n  \"lastName\": \"Verli\",\n  \"roles\": [\"carioca-rio\", \"user\"]\n}"
+						},
+						"url": {
+							"raw": "http://10.5.225.39.:5570/v1/user/create",
+							"protocol": "http",
+							"host": [
+								"10",
+								"5",
+								"225",
+								"39"
+							],
+							"port": "5570",
+							"path": [
+								"v1",
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogoutUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5555/v1/user/logout?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5555",
+							"path": [
+								"v1",
+								"user",
+								"logout"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUserPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5555/v1/user/update/password?userId=b7e4fe13-b2a6-4968-9c23-dbc377ab4ead&newPassword=123456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5555",
+							"path": [
+								"v1",
+								"user",
+								"update",
+								"password"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "b7e4fe13-b2a6-4968-9c23-dbc377ab4ead"
+								},
+								{
+									"key": "newPassword",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"marietagonzaga\",\n  \"password\": \"12345632\",\n  \"email\": \"marieta@gmail.com\",\n  \"firstName\": \"Marieta\",\n  \"lastName\": \"Gonzaga\",\n  \"role\": \"carioca-rio\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5555/v1/user/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5555",
+							"path": [
+								"v1",
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

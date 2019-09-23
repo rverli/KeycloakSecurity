@@ -50,18 +50,27 @@ public class ImportServiceImpl implements ImportService {
 	private String UPLOAD_DIR;
 	
 	public void importFile( MultipartFile file ) throws IOException, UsuarioNaoEncontradoException {
-		Set<UserDTO> users = this.extractFileToDTO( file );
+		
+		Set<UserDTO> users = this.fileToDTO( file );
+		
 		this.verifyList( users );
+
 		this.sendQueue( users );
 	}
 	
-	private Set<UserDTO> extractFileToDTO( MultipartFile file ) throws IOException {
+	/**
+	 * Extract users from file and convert it to DTO list
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private Set<UserDTO> fileToDTO( MultipartFile file ) throws IOException {
 		
-		logger.info("Extraindo arquivo!");
+		logger.info("Extrating file to UserDTO list!");
 		
 		String fileName = fileStorageService.storeFile(file);
 		
-		File csvFile = new File(UPLOAD_DIR + "/" + fileName);
+		File csvFile = new File( UPLOAD_DIR + "/" + fileName );
 		
 		Set<UserDTO> users = new HashSet<UserDTO>();
 		
@@ -80,29 +89,40 @@ public class ImportServiceImpl implements ImportService {
 			}
 		}
 		
-		if (csvFile.exists()) {
+		if ( csvFile.exists() ) {
 			csvFile.delete();
 		}
 		
 		return users;
 	}
 	
-	private void verifyList(Set<UserDTO> usersFile) throws UsuarioNaoEncontradoException {
+	/**
+	 * Verify if there are users already in Keycloak databases and remove them
+	 * @param usersFile
+	 * @throws UsuarioNaoEncontradoException
+	 */
+	private void verifyList( Set<UserDTO> usersFile ) throws UsuarioNaoEncontradoException {
 		
-		logger.info("Removendo registros que já existem!");
+		logger.info("Verify if there are users already in Keycloak databases and remove them");
 		
 		List<UserRepresentation> allUserKeycloak = userService.getUserAll(null, null);
 		
 		List<UserDTO> usersKeycloak = allUserKeycloak.stream()
 				.map( s -> this.parseUserDTO( s ) )
-				.collect(Collectors.toList());
+				.collect( Collectors.toList() );
 		
-		usersFile.removeIf( usersKeycloak::contains );		
+		usersFile.removeIf( usersKeycloak::contains );
+		
+		logger.info( usersFile.size() + " users will be created with that file!" );
 	}
 	
+	/**
+	 * Send users to JMS queue
+	 * @param users
+	 */
 	private void sendQueue( Set<UserDTO> users ) {
 		
-		logger.info("Enviando para fila!");
+		logger.info("Sending users to JMS queue!");
 		
 		for (UserDTO userDTO : users) {
 			sender.send( destinationQueue, new Gson().toJson(userDTO) );
