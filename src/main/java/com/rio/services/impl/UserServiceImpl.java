@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
 			this.associateRole( userDTO.getId(), userDTO.getUsername(), userDTO.getRoles(), usersResource, realmResource );
 			logger.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] created!");
 		} else {
-			logger.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] is already in keycloak database!");
 			this.associateRole( userDTO.getId(), userDTO.getUsername(), userDTO.getRoles(), usersResource, realmResource );			
+			logger.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] is already in keycloak database!");
 		}
 		return userDTO;
 	}
