@@ -2,8 +2,6 @@ package com.rio.controller.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +15,12 @@ import com.rio.model.RoleDTO;
 import com.rio.model.UserDTO;
 import com.rio.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/v1/user")
+@Slf4j
 public class UserControllerImpl implements UserController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(UserControllerImpl.class);
 	
 	@Autowired
 	private UserService userService;
@@ -33,7 +32,7 @@ public class UserControllerImpl implements UserController {
 		try {			
 			return userService.createUserAccount( userDTO, null, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());			
 			throw e;
 		}
 	}
@@ -45,7 +44,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			return userService.getUserDTO( username, email );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -57,7 +56,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			userService.removeUser(username);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -69,7 +68,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			userService.removeRoles( null, username, roles, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -81,7 +80,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			userService.associateRole( null, username, roles, null, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -93,7 +92,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			return userService.getRolesByUser( username, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -105,7 +104,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			userService.logoutUser( username, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -117,7 +116,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			userService.resetPassword(newPassword, username, null);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
@@ -129,7 +128,7 @@ public class UserControllerImpl implements UserController {
 		try {
 			return userService.updateUser( userDTO, null );
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
 	}		

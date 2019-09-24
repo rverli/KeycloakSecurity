@@ -1,7 +1,5 @@
 package com.rio.importFile.jms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -13,11 +11,12 @@ import com.rio.exceptions.UsuarioJaCadastradoException;
 import com.rio.exceptions.UsuarioNaoEncontradoException;
 import com.rio.model.UserDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class ListenerJms {
 
-	private static final Logger logger = LoggerFactory.getLogger( ListenerJms.class );
-	
 	@Autowired
 	private UserController userController;
 		
@@ -27,12 +26,12 @@ public class ListenerJms {
 	public void receive1(String message) {
 		
 		COUNT+=1;
-		logger.info( "" + COUNT );
+		log.info( "" + COUNT );
 		
 	  	try {
 	  		this.createUser( message );
 		} catch (Exception e) {		
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 		}	  
 	}
 	
@@ -43,11 +42,11 @@ public class ListenerJms {
 		try {
 			userController.createUser( userDTO );
 		} catch (UsuarioJaCadastradoException e1) {
-			logger.error(e1.getMessage());
+			log.error(e1.getMessage());
 		} catch (KeycloakException e1) {
-			logger.error(e1.getMessage());
+			log.error(e1.getMessage());
 		} catch (UsuarioNaoEncontradoException e1) {
-			logger.error(e1.getMessage());
+			log.error(e1.getMessage());
 		}
 	}
 }

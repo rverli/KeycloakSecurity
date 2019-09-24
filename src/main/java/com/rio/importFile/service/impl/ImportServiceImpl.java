@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,12 +25,12 @@ import com.rio.importFile.service.FileStorageService;
 import com.rio.importFile.service.ImportService;
 import com.rio.model.UserDTO;
 import com.rio.services.UserService;
-import com.rio.services.impl.UserServiceImpl;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class ImportServiceImpl implements ImportService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	private SenderJms sender;
@@ -66,7 +64,7 @@ public class ImportServiceImpl implements ImportService {
 	 */
 	private Set<UserDTO> fileToDTO( MultipartFile file ) throws IOException {
 		
-		logger.info("Extrating file to UserDTO list!");
+		log.info("Extrating file to UserDTO list!");
 		
 		String fileName = fileStorageService.storeFile(file);
 		
@@ -103,7 +101,7 @@ public class ImportServiceImpl implements ImportService {
 	 */
 	private void verifyList( Set<UserDTO> usersFile ) throws UsuarioNaoEncontradoException {
 		
-		logger.info("Verify if there are users already in Keycloak databases and remove them");
+		log.info("Verify if there are users already in Keycloak databases and remove them");
 		
 		List<UserRepresentation> allUserKeycloak = userService.getUserAll(null, null);
 		
@@ -113,7 +111,7 @@ public class ImportServiceImpl implements ImportService {
 		
 		usersFile.removeIf( usersKeycloak::contains );
 		
-		logger.info( usersFile.size() + " users will be created with that file!" );
+		log.info( usersFile.size() + " users will be created with that file!" );
 	}
 	
 	/**
@@ -122,7 +120,7 @@ public class ImportServiceImpl implements ImportService {
 	 */
 	private void sendQueue( Set<UserDTO> users ) {
 		
-		logger.info("Sending users to JMS queue!");
+		log.info("Sending users to JMS queue!");
 		
 		for (UserDTO userDTO : users) {
 			sender.send( destinationQueue, new Gson().toJson(userDTO) );
@@ -163,7 +161,7 @@ public class ImportServiceImpl implements ImportService {
 			userDTO.setRoles( roles );
 			
 		} catch (Exception e) {
-			logger.error(line);
+			log.error(line);
 		}
 		
 		return userDTO;		

@@ -1,7 +1,5 @@
 package com.rio.importFile.controller.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rio.importFile.controller.ImportController;
 import com.rio.importFile.service.ImportService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/v1/file")
+@Slf4j
 public class ImportControllerImpl implements ImportController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ImportControllerImpl.class);
 
     @Autowired
     private ImportService importService;
@@ -27,7 +26,7 @@ public class ImportControllerImpl implements ImportController {
     	try {
     		importService.importFile( multipartFile );    		
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
     }
@@ -40,7 +39,7 @@ public class ImportControllerImpl implements ImportController {
     			importService.importFile( multipartFile );
     		}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 			throw e;
 		}
     }

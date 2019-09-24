@@ -14,8 +14,6 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,11 +26,12 @@ import com.rio.model.UserDTO;
 import com.rio.services.KeycloakResources;
 import com.rio.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class UserServiceImpl implements UserService {
 
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-	
 	@Autowired
 	private KeycloakResources keycloakResources;
 	
@@ -54,10 +53,10 @@ public class UserServiceImpl implements UserService {
 			userDTO = this.createUser( userDTO, usersResource );
 			
 			this.associateRole( userDTO.getId(), userDTO.getUsername(), userDTO.getRoles(), usersResource, realmResource );
-			logger.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] created!");
+			log.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] created!");
 		} else {
 			this.associateRole( userDTO.getId(), userDTO.getUsername(), userDTO.getRoles(), usersResource, realmResource );			
-			logger.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] is already in keycloak database!");
+			log.info("User [" + userDTO.getUsername() + " - " + userDTO.getFirstName() + " " + userDTO.getLastName() + "] is already in keycloak database!");
 		}
 		return userDTO;
 	}
@@ -72,7 +71,7 @@ public class UserServiceImpl implements UserService {
 		
 		usersResource.get( userId ).logout();
 		
-		logger.info("User " + username + " was logged out!");
+		log.info("User " + username + " was logged out!");
 	}
 
 	public void resetPassword(String newPassword, String username, UsersResource userResource) throws UsuarioNaoEncontradoException {
@@ -90,7 +89,7 @@ public class UserServiceImpl implements UserService {
 		
 		userResource.get( userId ).resetPassword(newCredential);
 		
-		logger.info("Password changed! User [" + username + "]");
+		log.info("Password changed! User [" + username + "]");
 	}
 
 	public UserDTO getUserDTO(String username, String email) throws UsuarioNaoEncontradoException {
@@ -143,7 +142,7 @@ public class UserServiceImpl implements UserService {
 				keycloakResource.realm( REALM ).users().get(userList.get(i).getId()).remove();
 			}
 			
-			logger.info("Removed " + userList.size() + " users!");
+			log.info("Removed " + userList.size() + " users!");
 			
 			userList = this.getUserAll(username, keycloakResource);
 			
@@ -318,7 +317,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		usersResource.get( userId ).roles().realmLevel().remove( rolesToRemove );		
-		logger.info( "Roles [" + roles.toString() + "] removed from user " + username );
+		log.info( "Roles [" + roles.toString() + "] removed from user " + username );
 	}
 	
 	
@@ -354,7 +353,7 @@ public class UserServiceImpl implements UserService {
 		
 		if (!roles.isEmpty() && rolesUser.size() > 0) {
 			usersResource.get( userId ).roles().realmLevel().add( rolesUser );
-			logger.info("Associated role(s) " + rolesUser.toString() + " to user [" + username + "]");
+			log.info("Associated role(s) " + rolesUser.toString() + " to user [" + username + "]");
 		}
 	}
 	
