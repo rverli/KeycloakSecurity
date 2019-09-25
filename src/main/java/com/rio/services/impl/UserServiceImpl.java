@@ -14,6 +14,8 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,12 +28,11 @@ import com.rio.model.UserDTO;
 import com.rio.services.KeycloakResources;
 import com.rio.services.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Component
 public class UserServiceImpl implements UserService {
 
+	private static final Logger log = LoggerFactory.getLogger( UserServiceImpl.class );
+	
 	@Autowired
 	private KeycloakResources keycloakResources;
 	

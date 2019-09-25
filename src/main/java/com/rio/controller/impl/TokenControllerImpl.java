@@ -1,5 +1,7 @@
 package com.rio.controller.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +14,11 @@ import com.rio.controller.TokenController;
 import com.rio.model.TokenDTO;
 import com.rio.services.TokenService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping(value = "/v1/token")
-@Slf4j
 public class TokenControllerImpl implements TokenController {
+
+	private static final Logger log = LoggerFactory.getLogger( TokenControllerImpl.class );
 	
 	@Autowired
 	private TokenService tokenService;

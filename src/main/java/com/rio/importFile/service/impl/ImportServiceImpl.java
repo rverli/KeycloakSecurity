@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,10 @@ import com.rio.importFile.service.ImportService;
 import com.rio.model.UserDTO;
 import com.rio.services.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class ImportServiceImpl implements ImportService {
+
+	private static final Logger log = LoggerFactory.getLogger( ImportServiceImpl.class );
 	
 	@Autowired
 	private SenderJms sender;

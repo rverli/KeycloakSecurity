@@ -43,6 +43,16 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+        
+        <!-- Spring OAuth 2.0 Dependency Added Manually 
+		<dependency>
+		  <groupId>org.springframework.security.oauth.boot</groupId>
+		  <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+		  <version>2.0.1.RELEASE</version>
+		</dependency>
+		-->
+		
+		<!-- Keycloak -->
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-spring-boot-starter</artifactId>
@@ -62,13 +72,7 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>			
 		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>			
-			<scope>provided</scope>
-		</dependency>
 		
-
 		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -80,8 +84,7 @@
 			<artifactId>resteasy-jackson2-provider</artifactId>
 			<version>3.0.14.Final</version>
 		</dependency>
-
-
+		
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
@@ -116,6 +119,19 @@
 		</dependency>
 	</dependencies>
 
+<!-- 
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>org.keycloak.bom</groupId>
+	            <artifactId>keycloak-adapter-bom</artifactId>
+	            <version>3.4.3.Final</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>
+ -->
 	<build>
 		<plugins>
 			<plugin>
