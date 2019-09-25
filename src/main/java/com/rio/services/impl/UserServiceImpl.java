@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
 			userList.add( userRepresentation );
 			
 		} else {
-			userList = keycloakResource.realm(REALM).users().list(1, 100000);			
+			userList = keycloakResource.realm(REALM).users().list(1, 1000000);			
 		}
 		
 		return userList.size() > 0 ? userList : null;

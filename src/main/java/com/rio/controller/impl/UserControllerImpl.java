@@ -52,10 +52,11 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/remove")
 	@ResponseBody
-	public void removeUser( String username ) throws Exception {		
+	public boolean removeUser( String username ) throws Exception {		
 		
 		try {
 			userService.removeUser(username);
+			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;
@@ -64,10 +65,11 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/removeRoles")
 	@ResponseBody
-	public void removeRoles( String username, List<String> roles ) throws Exception {		
+	public boolean removeRoles( String username, List<String> roles ) throws Exception {		
 		
 		try {
 			userService.removeRoles( null, username, roles, null );
+			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;
@@ -76,10 +78,11 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/associateRoles")
 	@ResponseBody
-	public void associateRoles( String username, List<String> roles ) throws Exception {		
+	public boolean associateRoles( String username, List<String> roles ) throws Exception {		
 		
 		try {
 			userService.associateRole( null, username, roles, null, null );
+			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;
@@ -100,10 +103,11 @@ public class UserControllerImpl implements UserController {
 	
 	@PostMapping("/logout")
 	@ResponseBody
-	public void logoutUser(String username) throws Exception {
+	public boolean logoutUser(String username) throws Exception {
 		
 		try {
 			userService.logoutUser( username, null );
+			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;
@@ -112,7 +116,7 @@ public class UserControllerImpl implements UserController {
 
 	@PostMapping("/update/password")
 	@ResponseBody
-	public void updatePassword(String username, String newPassword) throws Exception {
+	public boolean updatePassword(String username, String newPassword) throws Exception {
 		
 		try {
 			userService.resetPassword(newPassword, username, null);
@@ -120,6 +124,7 @@ public class UserControllerImpl implements UserController {
 			log.error(e.getMessage());
 			throw e;
 		}
+		return true;
 	}
 	
 	@PostMapping("/update")

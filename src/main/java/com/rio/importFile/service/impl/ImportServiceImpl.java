@@ -52,7 +52,7 @@ public class ImportServiceImpl implements ImportService {
 		
 		Set<UserDTO> users = this.fileToDTO( file );
 		
-		this.verifyList( users );
+		users = this.verifyList( users );
 
 		this.sendQueue( users );
 	}
@@ -77,14 +77,17 @@ public class ImportServiceImpl implements ImportService {
 			
 			String line = null;
 			
+			BufferedReader csvReader = null;
+			
 			try {
-				BufferedReader csvReader = new BufferedReader(new FileReader( csvFile ));
+				csvReader = new BufferedReader(new FileReader( csvFile ));
 				while ((line = csvReader.readLine()) != null) {										
 					users.add( this.parse( line ) );
 				}
-				csvReader.close();
 			} catch (IOException e) {
 				throw e;
+			} finally {
+				csvReader.close();				
 			}
 		}
 		
@@ -98,21 +101,24 @@ public class ImportServiceImpl implements ImportService {
 	/**
 	 * Verify if there are users already in Keycloak databases and remove them
 	 * @param usersFile
+	 * @return 
 	 * @throws UsuarioNaoEncontradoException
 	 */
-	private void verifyList( Set<UserDTO> usersFile ) throws UsuarioNaoEncontradoException {
+	private Set<UserDTO> verifyList( Set<UserDTO> usersFile ) throws UsuarioNaoEncontradoException {
 		
-		log.info("Verify if there are users already in Keycloak databases and remove them");
-		
+		log.info("Getting users from Keycloak");
 		List<UserRepresentation> allUserKeycloak = userService.getUserAll(null, null);
 		
 		List<UserDTO> usersKeycloak = allUserKeycloak.stream()
 				.map( s -> this.parseUserDTO( s ) )
 				.collect( Collectors.toList() );
 		
+		log.info("Removing users that already there");
 		usersFile.removeIf( usersKeycloak::contains );
 		
 		log.info( usersFile.size() + " users will be created with that file!" );
+		
+		return usersFile;
 	}
 	
 	/**

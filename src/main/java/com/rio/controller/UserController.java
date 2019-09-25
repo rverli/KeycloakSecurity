@@ -32,7 +32,7 @@ public interface UserController {
 	 * @return
 	 * @throws Exception 
 	 */
-	void removeUser( String username ) throws Exception;
+	boolean removeUser( String username ) throws Exception;
 	
 	/**
 	 * Get all user's roles
@@ -47,7 +47,7 @@ public interface UserController {
 	 * @param userId
 	 * @throws Exception 
 	 */
-	void logoutUser(String username) throws Exception;
+	boolean logoutUser(String username) throws Exception;
 
 	/**
 	 * Update user's password
@@ -55,7 +55,7 @@ public interface UserController {
 	 * @param newPassword
 	 * @throws Exception 
 	 */	
-	void updatePassword(String username, String newPassword) throws Exception;
+	boolean updatePassword(String username, String newPassword) throws Exception;
 	
 	/**
 	 * Update user's fields
@@ -63,5 +63,5 @@ public interface UserController {
 	 * @return
 	 * @throws Exception 
 	 */
-	public UserDTO updateUser( @RequestBody UserDTO userDTO ) throws Exception;		
+	UserDTO updateUser( @RequestBody UserDTO userDTO ) throws Exception;		
 }
