@@ -16,7 +16,7 @@ public interface UserController {
 	 * @return
 	 * @throws Exception 
 	 */	
-	UserDTO createUser( @RequestBody UserDTO userDTO ) throws Exception;
+	UserDTO createUser( @RequestBody UserDTO userDTO, Boolean isAsynchronous ) throws Exception;
 	
 	/**
 	 * Get user 

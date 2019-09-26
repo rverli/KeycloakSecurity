@@ -42,7 +42,7 @@ public class ImportServiceImpl implements ImportService {
 	@Autowired
 	private UserService userService;
 	
-	@Value("${destination.queue}")
+	@Value("${destination.import.queue}")
 	private String destinationQueue;
 	
 	@Value("${file.upload-dir}")

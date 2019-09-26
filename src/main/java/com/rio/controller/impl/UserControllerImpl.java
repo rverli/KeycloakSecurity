@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.rio.controller.UserController;
+import com.rio.importFile.jms.SenderJms;
 import com.rio.model.RoleDTO;
 import com.rio.model.UserDTO;
 import com.rio.services.UserService;
@@ -29,16 +32,28 @@ public class UserControllerImpl implements UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private SenderJms sender;
+	
+	@Value("${destination.create.queue}")
+	private String destinationQueue;
+	
 	@PostMapping("/create")
 	@ResponseBody
-	public UserDTO createUser( @RequestBody @Valid UserDTO userDTO ) throws Exception {
+	public UserDTO createUser( @RequestBody @Valid UserDTO userDTO, @NotNull Boolean isAsynchronous ) throws Exception {
 		
-		try {			
-			return userService.createUserAccount( userDTO, null, null );
-		} catch (Exception e) {
-			log.error(e.getMessage());			
-			throw e;
-		}
+		if (isAsynchronous) {
+			sender.send( destinationQueue, new Gson().toJson(userDTO) );
+			return null;
+		} else {
+			
+			try {			
+				return userService.createUserAccount( userDTO, null, null );
+			} catch (Exception e) {
+				log.error(e.getMessage());			
+				throw e;
+			}
+		}		
 	}
 	
 	@GetMapping

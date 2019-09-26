@@ -45,10 +45,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-activemq</artifactId>
 		</dependency>		
@@ -60,11 +56,16 @@
 		</dependency>
          -->
          
-		<!-- Keycloak -->
+		<!-- Keycloak 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 		<dependency>
 		    <groupId>org.keycloak</groupId>
 		    <artifactId>keycloak-spring-security-adapter</artifactId>		    
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-admin-client</artifactId>

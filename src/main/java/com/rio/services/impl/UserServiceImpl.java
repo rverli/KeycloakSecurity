@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 			realmResource = keycloakResources.getRealmResourceInstance();
 		}
 		
-		if ( !existUser( userDTO.getUsername(), realmResource ) ) {
+		if ( !this.existUser( userDTO.getUsername(), realmResource ) ) {
 
 			userDTO = this.createUser( userDTO, usersResource );
 			

@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.rio.controller.UserController;
-import com.rio.exceptions.KeycloakException;
-import com.rio.exceptions.UsuarioJaCadastradoException;
-import com.rio.exceptions.UsuarioNaoEncontradoException;
 import com.rio.model.UserDTO;
 
 @Component
@@ -23,31 +20,30 @@ public class ListenerJms {
 		
 	private static int COUNT = 0; 
 	
-	@JmsListener(destination = "${destination.queue}")
-	public void receive1(String message) {
+	@JmsListener(destination = "${destination.import.queue}")
+	public void receiveImport(String message) {
 		
 		COUNT+=1;
 		log.info( "" + COUNT );
 		
+		UserDTO userDTO = new Gson().fromJson(message, UserDTO.class);
+		
 	  	try {
-	  		this.createUser( message );
+	  		userController.createUser( userDTO, false );
 		} catch (Exception e) {		
 			log.error(e.getMessage());
 		}	  
 	}
 	
-	private void createUser( String json ) throws Exception {
+	@JmsListener(destination = "${destination.create.queue}")
+	public void receiveCreateUser(String message) {
 		
-		UserDTO userDTO = new Gson().fromJson(json, UserDTO.class);
+		UserDTO userDTO = new Gson().fromJson(message, UserDTO.class);
 		
-		try {
-			userController.createUser( userDTO );
-		} catch (UsuarioJaCadastradoException e1) {
-			log.error(e1.getMessage());
-		} catch (KeycloakException e1) {
-			log.error(e1.getMessage());
-		} catch (UsuarioNaoEncontradoException e1) {
-			log.error(e1.getMessage());
-		}
+	  	try {
+	  		userController.createUser( userDTO, false );
+		} catch (Exception e) {		
+			log.error(e.getMessage());
+		}	  
 	}
 }

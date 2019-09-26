@@ -1,7 +1,7 @@
 #==================Spring properties================
-#server:
-  #port: 5590
-  #address: 10.5.225.39
+server:
+  port: 5590
+  address: 10.5.225.39
 
 #==================Keycloak properties================
 keycloak:
@@ -62,8 +62,11 @@ spring:
 file:
   upload-dir: /home/rverli/Documents/uploads
 
-destination: 
-  queue: id.rio.import.queue
+destination:
+   create:
+      queue: id.rio.create.user.queue    
+   import:
+      queue: id.rio.import.queue
 
 #==================Logging Configuration================
 
