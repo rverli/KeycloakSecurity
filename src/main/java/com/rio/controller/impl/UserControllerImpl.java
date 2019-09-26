@@ -2,6 +2,9 @@ package com.rio.controller.impl;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ public class UserControllerImpl implements UserController {
 	
 	@PostMapping("/create")
 	@ResponseBody
-	public UserDTO createUser( @RequestBody UserDTO userDTO ) throws Exception {
+	public UserDTO createUser( @RequestBody @Valid UserDTO userDTO ) throws Exception {
 		
 		try {			
 			return userService.createUserAccount( userDTO, null, null );
@@ -52,7 +55,7 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/remove")
 	@ResponseBody
-	public boolean removeUser( String username ) throws Exception {		
+	public boolean removeUser( @NotNull String username ) throws Exception {		
 		
 		try {
 			userService.removeUser(username);
@@ -65,7 +68,7 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/removeRoles")
 	@ResponseBody
-	public boolean removeRoles( String username, List<String> roles ) throws Exception {		
+	public boolean removeRoles( @NotNull String username, @NotNull List<String> roles ) throws Exception {		
 		
 		try {
 			userService.removeRoles( null, username, roles, null );
@@ -78,7 +81,7 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/associateRoles")
 	@ResponseBody
-	public boolean associateRoles( String username, List<String> roles ) throws Exception {		
+	public boolean associateRoles( @NotNull String username, @NotNull List<String> roles ) throws Exception {		
 		
 		try {
 			userService.associateRole( null, username, roles, null, null );
@@ -91,7 +94,7 @@ public class UserControllerImpl implements UserController {
 	
 	@GetMapping("/getRoles")
 	@ResponseBody
-	public List<RoleDTO> getRolesByUser( String username ) throws Exception {
+	public List<RoleDTO> getRolesByUser( @NotNull String username ) throws Exception {
 		
 		try {
 			return userService.getRolesByUser( username, null );
@@ -103,7 +106,7 @@ public class UserControllerImpl implements UserController {
 	
 	@PostMapping("/logout")
 	@ResponseBody
-	public boolean logoutUser(String username) throws Exception {
+	public boolean logoutUser( @NotNull String username ) throws Exception {
 		
 		try {
 			userService.logoutUser( username, null );
@@ -116,7 +119,7 @@ public class UserControllerImpl implements UserController {
 
 	@PostMapping("/update/password")
 	@ResponseBody
-	public boolean updatePassword(String username, String newPassword) throws Exception {
+	public boolean updatePassword( @NotNull String username, @NotNull String newPassword ) throws Exception {
 		
 		try {
 			userService.resetPassword(newPassword, username, null);
@@ -129,7 +132,7 @@ public class UserControllerImpl implements UserController {
 	
 	@PostMapping("/update")
 	@ResponseBody
-	public UserDTO updateUser( @RequestBody UserDTO userDTO ) throws Exception {
+	public UserDTO updateUser( @RequestBody @Valid UserDTO userDTO ) throws Exception {
 
 		try {
 			return userService.updateUser( userDTO, null );

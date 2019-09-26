@@ -1,5 +1,7 @@
 package com.rio.controller.impl;
 
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ public class TokenControllerImpl implements TokenController {
 	
 	@PostMapping
 	@ResponseBody
-	public TokenDTO getTokenUsingCredentials( String username, String password ) throws Exception {
+	public TokenDTO getTokenUsingCredentials( @NotNull String username, @NotNull String password ) throws Exception {
 		
 		try {
 			return tokenService.getToken( username, password );

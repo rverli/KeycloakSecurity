@@ -3,15 +3,28 @@ package com.rio.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 public class UserDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String id;
+	
+	@NotBlank
+	@NotNull
 	private String username;
+	
+	@Email
+	@NotBlank
 	private String email;
+	
 	private String firstName;
 	private String lastName;
+	
 	private String password;	
 	private List<String> roles;
 	
