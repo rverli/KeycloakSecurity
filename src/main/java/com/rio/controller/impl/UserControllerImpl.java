@@ -35,7 +35,7 @@ public class UserControllerImpl implements UserController {
 	@Autowired
 	private SenderJms sender;
 	
-	@Value("${destination.create.queue}")
+	@Value("${destination.queue.create}")
 	private String destinationQueue;
 	
 	@PostMapping("/create")

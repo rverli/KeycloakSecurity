@@ -326,6 +326,8 @@ public class UserServiceImpl implements UserService {
 			UsersResource usersResource, RealmResource realmResource) 
 					throws UsuarioNaoEncontradoException {
 
+		if ( roles == null || roles.size() <= 0 ) return;
+		
 		if ( usersResource == null ) {
 			usersResource = keycloakResources.getUsersResourceInstance();
 		}

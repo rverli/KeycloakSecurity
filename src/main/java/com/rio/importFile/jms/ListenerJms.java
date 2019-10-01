@@ -20,7 +20,7 @@ public class ListenerJms {
 		
 	private static int COUNT = 0; 
 	
-	@JmsListener(destination = "${destination.import.queue}")
+	@JmsListener(destination = "${destination.queue.import}")
 	public void receiveImport(String message) {
 		
 		COUNT+=1;
@@ -35,7 +35,7 @@ public class ListenerJms {
 		}	  
 	}
 	
-	@JmsListener(destination = "${destination.create.queue}")
+	@JmsListener(destination = "${destination.queue.create}")
 	public void receiveCreateUser(String message) {
 		
 		UserDTO userDTO = new Gson().fromJson(message, UserDTO.class);

@@ -1,6 +1,6 @@
 #==================Spring properties================
 server:
-  port: 5590
+  port: 5596
   address: 10.5.225.39
 
 #==================Keycloak properties================
@@ -18,25 +18,25 @@ keycloak:
   #resource: identidade-rio-api
   #credentials:
   #  secret: cde401bc-f222-4a15-9c36-1336d199374f
-  ssl-required: none
+  ssl-required: external
   bearer-only: true
-  confidential-port: 0
-  use-resource-role-mappings: false
+  #confidential-port: 0
+  use-resource-role-mappings: true
   principal-attribute: preferred_username
-  cors: true
-  security-constraints:
-    - auth-roles:
-      - User
-      security-collections:
-      - name: unsecured
-        patterns:
-        - /v1/user
-    - auth-roles: 
-      - Admin
-      security-collections:
-      - name: secured
-        patterns:
-        - /v1/admin
+  #cors: true
+  #security-constraints:
+  #  - auth-roles:
+  #    - User
+  #    security-collections:
+  #    - name: unsecured
+  #      patterns:
+  #      - /v1/user
+  #  - auth-roles: 
+  #    - Admin
+  #    security-collections:
+  #    - name: secured
+  #      patterns:
+  #      - /v1/admin
 
 #==================Spring properties================
 
@@ -63,10 +63,9 @@ file:
   upload-dir: /home/rverli/Documents/uploads
 
 destination:
-   create:
-      queue: id.rio.create.user.queue    
-   import:
-      queue: id.rio.import.queue
+   queue:
+      create: id.rio.create.user.queue      
+      import: id.rio.import.queue
 
 #==================Logging Configuration================
 
