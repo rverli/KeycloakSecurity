@@ -18,6 +18,10 @@ import com.rio.services.TokenService;
 
 @RestController
 @RequestMapping(value = "/v1/token")
+/**
+ * TODO SEGURANÇA [Usar @Secured("ROLE_APPLICATION") para habilitar segurança] 
+ */
+//@Secured("ROLE_APPLICATION")
 public class TokenControllerImpl implements TokenController {
 
 	private static final Logger log = LoggerFactory.getLogger( TokenControllerImpl.class );
@@ -25,12 +29,24 @@ public class TokenControllerImpl implements TokenController {
 	@Autowired
 	private TokenService tokenService;
 	
-	@PostMapping
+	@PostMapping("/user")
 	@ResponseBody
 	public TokenDTO getTokenUsingCredentials( @NotNull String username, @NotNull String password ) throws Exception {
 		
 		try {
 			return tokenService.getToken( username, password );
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}		
+	}
+	
+	@PostMapping("/service-account")
+	@ResponseBody
+	public TokenDTO getTokenServiceAccount( @NotNull String clientId, @NotNull String clientPassword ) throws Exception {
+		
+		try {
+			return tokenService.getTokenServiceAccount( clientId, clientPassword );
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;

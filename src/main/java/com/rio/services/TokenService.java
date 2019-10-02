@@ -12,5 +12,8 @@ public interface TokenService {
 	TokenDTO getToken( String username, String password ) 
 			throws UnsupportedOperationException, ParseException, IOException, ServiceException;
 	
+	TokenDTO getTokenServiceAccount( String clientId, String clientPassword )
+			throws UnsupportedOperationException, ParseException, IOException, ServiceException;
+	
 	String getByRefreshToken( String refreshToken ) throws UnsupportedOperationException, IOException;
 }

@@ -55,6 +55,17 @@ public class TokenServiceImpl implements TokenService {
 		return this.parseToken( this.sendPost( urlParameters ) );
 	}
 
+	public TokenDTO getTokenServiceAccount( String clientId, String clientPassword )
+			throws UnsupportedOperationException, ParseException, IOException, ServiceException {
+		
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("grant_type", "client_credentials"));
+		urlParameters.add(new BasicNameValuePair("client_id", clientId));		
+		urlParameters.add(new BasicNameValuePair("client_secret", clientPassword));
+		
+		return this.parseToken( this.sendPost( urlParameters ) );
+	}
+	
 	private TokenDTO parseToken( String response ) throws ParseException, ServiceException {
 		
 		if ( response.contains("error") ) {

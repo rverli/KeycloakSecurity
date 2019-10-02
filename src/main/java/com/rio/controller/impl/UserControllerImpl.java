@@ -25,6 +25,10 @@ import com.rio.services.UserService;
 
 @RestController
 @RequestMapping(value = "/v1/user")
+/**
+ * TODO SEGURANÇA [Usar @Secured("ROLE_APPLICATION") para habilitar segurança] 
+ */
+//@Secured("ROLE_APPLICATION")
 public class UserControllerImpl implements UserController {
 	
 	private static final Logger log = LoggerFactory.getLogger( UserControllerImpl.class );
