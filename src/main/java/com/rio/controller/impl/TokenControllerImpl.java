@@ -18,10 +18,6 @@ import com.rio.services.TokenService;
 
 @RestController
 @RequestMapping(value = "/v1/token")
-/**
- * TODO SEGURANÇA [Usar @Secured("ROLE_APPLICATION") para habilitar segurança] 
- */
-//@Secured("ROLE_APPLICATION")
 public class TokenControllerImpl implements TokenController {
 
 	private static final Logger log = LoggerFactory.getLogger( TokenControllerImpl.class );

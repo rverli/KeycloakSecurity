@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
@@ -66,23 +67,22 @@ public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAda
     protected void configure(final HttpSecurity http) throws Exception {
         super.configure(http);
         
-        http.authorizeRequests().antMatchers("/v1*").permitAll();
-        
         /**
          * TODO SEGURANÇA [Usar para habilitar segurança] 
          */
-        //http.cors()
-        //.and()
-        //.csrf()
-        //.disable()
-        //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        //.sessionAuthenticationStrategy(sessionAuthenticationStrategy())
-        //.and()
-        //.authorizeRequests()
-        //.antMatchers("/v1/token/**").hasRole("APPLICATION")
-        //.antMatchers("/v1/user/**").hasRole("APPLICATION")
-        //.antMatchers("/v1/test/**").hasRole("APPLICATION")
-        //.anyRequest().denyAll();                    
+        http.cors()
+        .and()
+        .csrf()
+        .disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+        .and()
+        .authorizeRequests()
+        .antMatchers("/v1/token/**").permitAll()
+        .antMatchers("/v1/file/**").permitAll()
+        //.antMatchers("/v1/user/**").hasRole("APPLICATION")        
+        .antMatchers("/v1/user/**").permitAll()
+        .anyRequest().denyAll();                    
     }
 
     @Bean
